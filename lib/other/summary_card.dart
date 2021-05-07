@@ -8,22 +8,16 @@ import 'package:flutter_mr_budget/other/utils.dart';
 import '../other/indicator.dart';
 import 'package:intl/intl.dart';
 
-class Home extends StatefulWidget {
-  final BudgetDao dao;
-  _HomeState state;
+class SummaryCard extends StatefulWidget {
+  final BudgetWithExpensesAndIncomes wholeBudget;
 
-  Home({Key key, this.dao}) : super(key: key);
+  const SummaryCard({Key key, this.wholeBudget}) : super(key: key);
 
   @override
-  _HomeState createState() {
-    state = _HomeState();
-    return state;
-  }
-
-  getState() => state;
+  _SummaryCardState createState() => _SummaryCardState();
 }
 
-class _HomeState extends State<Home> {
+class _SummaryCardState extends State<SummaryCard> {
   final _fontSize = 22.0;
   final _radius = 180.0;
   final Map<String, Color> _colors = {
@@ -40,8 +34,6 @@ class _HomeState extends State<Home> {
     0.0, 0.0, 0.0, 0.0,
     0.0, 0.0, 0.0, 0.0
   ];
-  Budget _latestBudget;
-  BudgetWithExpensesAndIncomes _wholeBudget;
   int touchedIndex;
   String _formattedDate = '';
   double _totalExpenses = 0.0;
@@ -52,34 +44,20 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    print('initState SummaryCard (FirstPage)');
-    _fetchWholeBudget();
-  }
-
-  refresh() {
-    _totalExpenses = 0.0;
-    _totalIncomes = 0.0;
-    expensesByCategory = [
-      0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0
-    ];
     _fetchWholeBudget();
   }
 
   void _fetchWholeBudget() async {
-    _latestBudget = await widget.dao.getLatestBudget();
-
     setState(() {
-      _formattedDate = DateFormat('MMM y').format(_latestBudget.date);
+      _formattedDate = DateFormat('MMM y').format(widget.wholeBudget.budget.date);
     });
 
-    _wholeBudget = await widget.dao.getBudgetWithExpensesAndIncomesById(_latestBudget.budgetId);
 
-    _wholeBudget.expenses.forEach((expense) {
+    widget.wholeBudget.expenses.forEach((expense) {
       _totalExpenses += expense.value;
     });
 
-    _wholeBudget.incomes.forEach((income) {
+    widget.wholeBudget.incomes.forEach((income) {
       _totalIncomes += income.value;
     });
 
@@ -89,7 +67,7 @@ class _HomeState extends State<Home> {
   }
 
   void _setPieChartData() async {
-    final expenses = _wholeBudget.expenses;
+    final expenses = widget.wholeBudget.expenses;
 
     for(var i = 0; i < expenses.length; i++) {
       if(expenses[i].type == EXPENSE_TYPES[0])
@@ -109,7 +87,7 @@ class _HomeState extends State<Home> {
       else if(expenses[i].type == EXPENSE_TYPES[7])
         expensesByCategory[7] += expenses[i].value;
     }
-    
+
     Map<String, double> mapOfExpenses = new Map();
     for(var i = 0; i < expensesByCategory.length; i++) {
       if(expensesByCategory[i] != 0.0) {
@@ -168,7 +146,7 @@ class _HomeState extends State<Home> {
                       style: TextStyle(
                         color: Theme.of(context).textTheme.subtitle2.color,
                         fontSize: 18.0,
-                          letterSpacing: 1.5,
+                        letterSpacing: 1.5,
 
                       ),
                     ),
@@ -191,9 +169,9 @@ class _HomeState extends State<Home> {
                     Text(
                       '- ${_totalExpenses.toString()} PLN',
                       style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
@@ -280,26 +258,26 @@ class _HomeState extends State<Home> {
                 child: AspectRatio(
                   aspectRatio: 1,
                   child: PieChart(
-                   PieChartData(
-                     pieTouchData: PieTouchData(touchCallback: (pieTouchResponse) {
-                       setState(() {
-                         final desiredTouch = pieTouchResponse.touchInput is! PointerExitEvent &&
-                             pieTouchResponse.touchInput is! PointerUpEvent;
-                         if (desiredTouch && pieTouchResponse.touchedSection != null) {
-                           touchedIndex = pieTouchResponse.touchedSection.touchedSectionIndex;
-                         } else {
-                           touchedIndex = -1;
-                         }
-                       });
-                     }),
-                     sections: _pieChartData,
-                     startDegreeOffset: 180,
-                     sectionsSpace: 0,
-                     borderData: FlBorderData(
-                       show: false,
-                     ),
-                     centerSpaceRadius: 0,
-                   ),
+                    PieChartData(
+                      pieTouchData: PieTouchData(touchCallback: (pieTouchResponse) {
+                        setState(() {
+                          final desiredTouch = pieTouchResponse.touchInput is! PointerExitEvent &&
+                              pieTouchResponse.touchInput is! PointerUpEvent;
+                          if (desiredTouch && pieTouchResponse.touchedSection != null) {
+                            touchedIndex = pieTouchResponse.touchedSection.touchedSectionIndex;
+                          } else {
+                            touchedIndex = -1;
+                          }
+                        });
+                      }),
+                      sections: _pieChartData,
+                      startDegreeOffset: 180,
+                      sectionsSpace: 0,
+                      borderData: FlBorderData(
+                        show: false,
+                      ),
+                      centerSpaceRadius: 0,
+                    ),
                   ),
                 ),
               ),
@@ -309,7 +287,5 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
 }
-
-
-

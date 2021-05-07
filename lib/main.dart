@@ -83,13 +83,13 @@ class _DarkLightThemeState extends State<DarkLightTheme> {
   int _currentIndex = 0;
   PageController _pageController;
   bool _light = true;
-  SummaryCard _summaryCard;
+  Home _summaryCard;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
-    _summaryCard = SummaryCard(dao: widget.dao);
+    _summaryCard = Home(dao: widget.dao);
   }
 
   @override
