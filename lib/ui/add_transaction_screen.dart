@@ -296,10 +296,6 @@ class _TransactionViewState extends State<TransactionView>
   }
 
   void _addExpense() async {
-    return;
-    if(_controllerExpenseAmount.text == null || _controllerExpenseAmount.text.isEmpty) {
-
-    }
     var amount = double.parse(_controllerExpenseAmount.text);
     var expenseName = _controllerExpenseName.text;
     var expenseType = EXPENSE_TYPES[_selectedIcon];
@@ -316,7 +312,6 @@ class _TransactionViewState extends State<TransactionView>
   }
 
   void _addIncome() async {
-
     final double amount = double.parse(_controllerIncomeAmount.text);
     final incomeName = _controllerIncomeName.text;
 

@@ -20,16 +20,11 @@ class _ExpenseListState extends State<ExpenseList> {
   BudgetWithExpensesAndIncomes _wholeBudget;
   int _choiceIndex = -1;
   final _ALL = 'All';
-  final _start = Offset(1, 0);
-  final _end = Offset.zero;
-  Tween<Offset> _tween;
-  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   ListView _listView = ListView();
 
   @override
   void initState() {
     super.initState();
-    _tween = Tween(begin: _start, end: _end);
     _fetchLatestBudget();
   }
 
@@ -58,7 +53,6 @@ class _ExpenseListState extends State<ExpenseList> {
     }
 
     _listView = ListView.separated(
-      key: listKey,
       itemCount: expenses.length,
       itemBuilder: (context, index) {
         return ExpenseItem(
@@ -70,7 +64,7 @@ class _ExpenseListState extends State<ExpenseList> {
           },
           onDelete: (expenseToDelete) {
             if (expenseToDelete != null) {
-              _deleteExpenseInListAndDb(expenseToDelete, expenseType, index);
+              _deleteExpenseInListAndDb(expenseToDelete, expenseType);
             }
           },
         );
@@ -88,29 +82,21 @@ class _ExpenseListState extends State<ExpenseList> {
     _wholeBudget.expenses[_wholeBudget.expenses
             .indexWhere((exp) => exp.expenseId == updatedExpense.expenseId)] =
         updatedExpense;
+
     setState(() {
       _buildListView(expenseType);
     });
   }
 
   void _deleteExpenseInListAndDb(
-      Expense expenseToDelete, String expenseType, int index
+      Expense expenseToDelete, String expenseType
       ) async {
     await widget.dao.deleteExpense(expenseToDelete);
     _wholeBudget.expenses.remove(expenseToDelete);
 
-    listKey.currentState.removeItem(index, (context, animation) {
-      return ExpenseItem(expense: expenseToDelete, onUpdated: (updatedExpense) {
-        if (updatedExpense != null) {
-          _updateExpenseInListAndDb(updatedExpense, expenseType);
-        }
-      },
-        onDelete: (expenseToDelete) {
-          if (expenseToDelete != null) {
-            _deleteExpenseInListAndDb(expenseToDelete, expenseType, index);
-          }
-        },);
-    }, duration: const Duration(milliseconds: 500) );
+    setState(() {
+      _buildListView(expenseType);
+    });
   }
 
   @override
