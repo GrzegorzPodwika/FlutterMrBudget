@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mr_budget/backend/db/dao.dart';
-import 'package:flutter_mr_budget/backend/db/models.dart';
+import 'package:flutter_mr_budget/db/dao.dart';
+import 'package:flutter_mr_budget/db/models.dart';
 import 'package:intl/intl.dart';
 
 class HistoryList extends StatefulWidget {

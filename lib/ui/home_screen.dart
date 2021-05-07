@@ -1,11 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mr_budget/backend/db/dao.dart';
-import 'package:flutter_mr_budget/backend/db/expense_type.dart';
-import 'package:flutter_mr_budget/backend/db/models.dart';
+import 'package:flutter_mr_budget/db/dao.dart';
+import 'package:flutter_mr_budget/db/expense_type.dart';
+import 'package:flutter_mr_budget/db/models.dart';
 import 'package:flutter_mr_budget/other/utils.dart';
-import 'indicator.dart';
+import '../other/indicator.dart';
 import 'package:intl/intl.dart';
 
 class SummaryCard extends StatefulWidget {

@@ -1,7 +1,5 @@
-
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
-
 
 String convertToPercentValue(double value, double total) {
   double percentValue = (value * 100.0) / total;

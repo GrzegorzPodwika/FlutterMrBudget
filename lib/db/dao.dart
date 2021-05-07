@@ -1,7 +1,7 @@
 // @dart=2.12
 
 import 'package:floor/floor.dart';
-import 'package:flutter_mr_budget/backend/db/models.dart';
+import 'package:flutter_mr_budget/db/models.dart';
 import 'package:meta/meta.dart';
 
 @dao

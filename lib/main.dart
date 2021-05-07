@@ -1,15 +1,47 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mr_budget/backend/db/dao.dart';
-import 'package:flutter_mr_budget/backend/db/database.dart';
-import 'package:flutter_mr_budget/ui/add_transaction_view.dart';
-import 'package:flutter_mr_budget/ui/expense_list.dart';
-import 'package:flutter_mr_budget/ui/history.dart';
-import 'package:flutter_mr_budget/ui/summary_card.dart';
+import 'package:flutter_mr_budget/db/dao.dart';
+import 'package:flutter_mr_budget/db/database.dart';
+import 'package:flutter_mr_budget/ui/add_transaction_screen.dart';
+import 'package:flutter_mr_budget/ui/expense_list_screen.dart';
+import 'package:flutter_mr_budget/ui/history_screen.dart';
+import 'package:flutter_mr_budget/ui/home_screen.dart';
 
-import 'package:flutter_mr_budget/backend/db/models.dart';
-import 'package:flutter_mr_budget/ui/settings.dart';
+import 'package:flutter_mr_budget/db/models.dart';
+import 'package:flutter_mr_budget/ui/settings_screen.dart';
+
+ThemeData _lightTheme = ThemeData(
+    accentColor: Colors.teal,
+    brightness: Brightness.light,
+    primaryColor: Colors.blue,
+    textTheme: TextTheme(
+        headline6: TextStyle(
+            color: Colors.black,
+            fontSize: 20.0
+        ),
+        subtitle2: TextStyle(
+            color: Colors.black,
+            fontSize: 18.0
+        )
+    )
+);
+
+ThemeData _darkTheme = ThemeData(
+    accentColor: Colors.amber,
+    brightness: Brightness.dark,
+    primaryColor: Colors.blue,
+    textTheme: TextTheme(
+        headline6: TextStyle(
+            color: Colors.white,
+            fontSize: 20.0
+        ),
+        subtitle2: TextStyle(
+            color: Colors.white,
+            fontSize: 18.0
+        )
+    )
+);
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -159,47 +191,33 @@ class CustomFAB extends StatelessWidget {
 
 
   void _navigateToAddTransactionView(context) async {
-    final result = await Navigator.push(context, MaterialPageRoute<bool>(builder: (BuildContext context){
-      return TransactionView(dao: dao);
-      })
-    );
+    final result = await Navigator.of(context).push(_createRoute());
 
     print('Navigation result = $result');
     if(result != null && result == true) {
       needRefresh.call(result);
     }
   }
+
+  Route<bool> _createRoute() {
+    return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => TransactionView(dao: dao),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(0.0, 1.0);
+          var end = Offset.zero;
+          var curve = Curves.decelerate;
+          var curveTween = CurveTween(curve: curve);
+
+          var tween = Tween(begin: begin, end: end).chain(curveTween);
+
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+              position: offsetAnimation,
+              child: child
+          );
+        }
+    );
+  }
 }
 
-
-ThemeData _lightTheme = ThemeData(
-  accentColor: Colors.teal,
-  brightness: Brightness.light,
-  primaryColor: Colors.blue,
-  textTheme: TextTheme(
-    headline6: TextStyle(
-        color: Colors.black,
-        fontSize: 20.0
-    ),
-    subtitle2: TextStyle(
-      color: Colors.black,
-      fontSize: 18.0
-    )
-  )
-);
-
-ThemeData _darkTheme = ThemeData(
-    accentColor: Colors.amber,
-    brightness: Brightness.dark,
-    primaryColor: Colors.blue,
-    textTheme: TextTheme(
-      headline6: TextStyle(
-        color: Colors.white,
-            fontSize: 20.0
-      ),
-      subtitle2: TextStyle(
-        color: Colors.white,
-        fontSize: 18.0
-      )
-  )
-);
