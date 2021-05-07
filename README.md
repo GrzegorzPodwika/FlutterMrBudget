@@ -3,6 +3,7 @@
 A flutter project of mobile app for financial management.
 
 ## Screenshots
+<p align="justify">
   <img src="./img/img01.png" width="230">
   <img src="./img/img02.png" width="230">
   <img src="./img/img03.png" width="230">
@@ -13,3 +14,4 @@ A flutter project of mobile app for financial management.
   <img src="./img/img08.png" width="230">
   <img src="./img/img09.png" width="230">
   <img src="./img/img10.png" width="230">
+</p>
